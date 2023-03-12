@@ -2,7 +2,7 @@
 import { createNewProject } from '@/lib/api'
 
 import { useRouter } from 'next/navigation'
-import { startTransition, useState } from 'react'
+import { useState } from 'react'
 import Modal from 'react-modal'
 import Button from './buttons//Button'
 import Input from './Input'
@@ -20,12 +20,12 @@ const NewProject = () => {
 		e.preventDefault()
 		e.preventDefault()
 		await createNewProject(name)
-		await startTransition(() => {
-			// Refresh the current route and fetch new data from the server without
-			// losing client-side browser or React state.
-			router.refresh()
-		})
-		closeModal()
+		// await startTransition(() => {
+		// 	// Refresh the current route and fetch new data from the server without
+		// 	// losing client-side browser or React state.
+		// 	router.refresh()
+		// })
+		// closeModal()
 	}
 
 	return (
