@@ -2,7 +2,7 @@
 import { register, signin } from '@/lib/api'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { FormEvent, useCallback, useState } from 'react'
 import Button from './buttons/Button'
 import Card from './Card'
 import Input from './Input'
@@ -24,27 +24,39 @@ const signinContent = {
 }
 const initial = { email: '', password: '', firstName: '', lastName: '' }
 
-const AuthForm = ({ mode }) => {
+const AuthForm = ({ mode }: { mode: 'register' | 'signin' }) => {
 	const [formState, setFormState] = useState({ ...initial })
+	const [error, setError] = useState('')
 	const router = useRouter()
 
-	const handleSubmit = async e => {
-		e.preventDefault()
-		try {
-			if (mode === 'register') {
-				await register(formState)
-				console.log('registered')
-			} else {
-				await signin(formState)
-				console.log('signed In')
+	const handleSubmit = useCallback(
+		async (e: FormEvent) => {
+			e.preventDefault()
+			try {
+				if (mode === 'register') {
+					await register(formState)
+					console.log('registered')
+				} else {
+					await signin(formState)
+					console.log('signed In')
+				}
+				router.push('/home')
+				setFormState(initial)
+			} catch (e) {
+				console.log(e)
+			} finally {
+				setFormState({ ...initial })
 			}
-			router.push('/home')
-			setFormState(initial)
-		} catch (e) {
-			console.log(e)
-		}
-	}
+		},
+		[
+			formState.email,
+			formState.password,
+			formState.firstName,
+			formState.lastName
+		]
+	)
 	const content = mode === 'register' ? registerContent : signinContent
+
 	return (
 		<Card>
 			<div className='w-full'>
